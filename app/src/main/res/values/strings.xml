@@ -26,5 +26,7 @@
     <string name="empty_result">No Results</string>
     <string name="error_search">error while searching</string>
     <string name="check_connection">check your internet connection</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 
 </resources>
