@@ -3,10 +3,12 @@ package com.dev.orium.reader.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import nl.qbusict.cupboard.Cupboard;
 
-/**
- * Created by y.drobysh on 21.11.2014.
- */
 public class RssItemAdapter extends CursorAdapter {
     private final Cupboard mCupboard;
     private Feed feed;
@@ -100,6 +99,7 @@ public class RssItemAdapter extends CursorAdapter {
         String spanned = Html.fromHtml(doc.toString()).toString();
         SpannableString spanString = new SpannableString(item.title + " - " + spanned);
         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, item.title.length(), 0);
+        spanString.setSpan(new ForegroundColorSpan(!item.readed ? Color.BLACK : Color.GRAY), 0, spanString.length(), 0);
         return spanString;
     }
 

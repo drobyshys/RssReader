@@ -99,9 +99,9 @@ public class RssProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = sURIMatcher.match(uri);
-        String base = null;
+        String base;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long id = 0;
+        long id;
         switch (uriType) {
             case FEEDS:
             case FEED_ITEM:
@@ -112,6 +112,11 @@ public class RssProvider extends ContentProvider {
                 break;
             case RSS:
                 id = db.insertWithOnConflict("RssItem", null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                base = RSS_PATH;
+                break;
+            case RSS_ITEM:
+//                id = db.insertWithOnConflict("RssItem", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                id = cupboard().withDatabase(db).put(RssItem.class, values);
                 base = RSS_PATH;
                 break;
             default:

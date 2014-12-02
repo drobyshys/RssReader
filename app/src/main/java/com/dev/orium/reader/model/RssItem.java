@@ -20,5 +20,7 @@ public class RssItem {
     public Date publicationDate;
 
     public String mediaURL;
+
+    public boolean readed = false;
 //    public Long _mediaSize;
 }

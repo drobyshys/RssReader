@@ -165,21 +165,13 @@ public class MainController {
 
     public void onRssItemClick(long id) {
         if (isTabletMode) {
-            showRssContainer();
+            showRssContainer(id);
             menuItemFull.setVisible(true);
         } else {
             Intent rssIntent = new Intent(mActivity, RssViewActivity.class);
             rssIntent.putExtra(ViewRssFragment.EXTRAS_RSS_ITEM_ID, id);
             mActivity.startActivity(rssIntent);
         }
-    }
-
-    private FragmentTransaction animatedTransaction() {
-        return mActivity.getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.fragment_slide_left_enter,
-                        R.anim.fragment_slide_left_exit
-                        , R.anim.fragment_slide_right_enter
-                        , R.anim.fragment_slide_right_exit);
     }
 
     private void showFeedContainer() {
@@ -191,6 +183,11 @@ public class MainController {
         ResizeWidthAnimation anim = new ResizeWidthAnimation(frame, newWidth);
         anim.setDuration(500);
         frame.startAnimation(anim);
+    }
+
+    private void showRssContainer(long id) {
+        showRssContainer();
+        mFragmentRss.setRssItem(id);
     }
 
     private void showRssContainer() {

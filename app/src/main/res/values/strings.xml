@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ClearSky</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">My Rss Feeder</string>
     <string name="action_settings">Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="add_city">Add city</string>
 
-    <string-array name="drawer_items">
-        <item>Popular</item>
-        <item>Upcoming</item>
-        <item>Search</item>
-    </string-array>
 
-    <string name="api_key">2e8d2245280d8473a07e8027dd0f506d</string>
-    <string name="movie_db_api">517f8aa6e16534e61ea898fb2e896832</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_feed">добавить</string>
     <string name="title_activity_add_feed">Add feed</string>
     <string name="btn_search">search</string>

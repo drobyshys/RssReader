@@ -131,7 +131,6 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getActivity(), position + "", Toast.LENGTH_SHORT).show();
         controller.onRssItemClick(id);
     }
 

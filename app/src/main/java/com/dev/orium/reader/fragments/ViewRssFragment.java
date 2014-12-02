@@ -5,15 +5,13 @@ import android.content.ContentUris;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.TextView;
 
-import com.dev.orium.reader.R;
 import com.dev.orium.reader.MainController;
+import com.dev.orium.reader.R;
 import com.dev.orium.reader.Utils.DateUtils;
 import com.dev.orium.reader.data.RssProvider;
 import com.dev.orium.reader.model.Feed;
@@ -21,8 +19,7 @@ import com.dev.orium.reader.model.RssItem;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import nl.qbusict.cupboard.Cupboard;
-import nl.qbusict.cupboard.CupboardFactory;
+import nl.qbusict.cupboard.ProviderCompartment;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
@@ -37,6 +34,8 @@ public class ViewRssFragment extends Fragment {
     private MainController controller;
     private RssItem rssItem;
     private Feed feed;
+    private ProviderCompartment cupboard;
+    private long rssId;
 
 
 //    @InjectView(android.R.id.list)
@@ -56,19 +55,20 @@ public class ViewRssFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        cupboard = cupboard().withContext(getActivity());
+
         Bundle args = getArguments();
         if (args != null) {
-            long rssId = args.getLong(EXTRAS_RSS_ITEM_ID);
-            if (rssId > 0) {
-                rssItem = cupboard().withContext(getActivity())
-                        .query(ContentUris.withAppendedId(RssProvider.RSS_URI, rssId), RssItem.class)
-                        .get();
-                if (rssItem != null) {
-                    feed = cupboard().withContext(getActivity())
-                            .query(ContentUris.withAppendedId(RssProvider.FEEDS_URI, rssItem._feedId), Feed.class)
-                            .get();
-                }
-            }
+            rssId = args.getLong(EXTRAS_RSS_ITEM_ID);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (rssItem == null && rssId > 0) {
+            getData(rssId);
+            updateView();
         }
     }
 
@@ -87,15 +87,26 @@ public class ViewRssFragment extends Fragment {
             updateView();
     }
 
+    public void setRssItem(long id) {
+        this.rssId = id;
+        if (isAdded()) {
+            getData(id);
+            updateView();
+        }
+    }
+
     private void updateView() {
+        if (rssItem == null)
+            return;
+
         StringBuilder content = new StringBuilder((int) (rssItem.description.length() * 1.5));
 
-        content.append("<h3>" + rssItem.title + "</h3><hr/>");
+        content.append("<h3>").append(rssItem.title).append("</h3><hr/>");
         content.append("<table style='font-size:80%;'><tr>");
         if (feed != null)
-            content.append("<td>" + feed.title + "</td>");
-        content.append("<td style='width:1%;white-space:nowrap;color:#558;'>"
-                + DateUtils.getDateString(rssItem.publicationDate) + "</td>");
+            content.append("<td>").append(feed.title).append("</td>");
+        content.append("<td style='width:1%;white-space:nowrap;color:#558;'>")
+                .append(DateUtils.getDateString(rssItem.publicationDate)).append("</td>");
         content.append("</tr></table><br/><br/>");
         content.append(rssItem.description);
 
@@ -111,7 +122,23 @@ public class ViewRssFragment extends Fragment {
     }
 
 //    @Override
+
 //    public void onViewCreated(View v, Bundle savedInstanceState) {
+private void getData(long rssId) {
+    rssItem = cupboard
+            .query(ContentUris.withAppendedId(RssProvider.RSS_URI, rssId), RssItem.class)
+            .get();
+    if (rssItem != null) {
+        feed = cupboard
+                .query(ContentUris.withAppendedId(RssProvider.FEEDS_URI, rssItem._feedId), Feed.class)
+                .get();
+        if (!rssItem.readed) {
+            rssItem.readed = true;
+            cupboard.put(RssProvider.RSS_URI, rssItem);
+        }
+    }
+
+}
 //        super.onViewCreated(v, savedInstanceState);
 //        ButterKnife.inject(this, v);
 //
