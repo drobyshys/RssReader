@@ -1,5 +1,7 @@
 package com.dev.orium.reader.parser;
 
+import com.dev.orium.reader.Utils.AppUtils;
+import com.dev.orium.reader.Utils.DateUtils;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.model.RssItem;
 
@@ -9,7 +11,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class RSSParser {
 	private static final String NAMESPACE_MEDIA = "http://search.yahoo.com/mrss/";
@@ -47,11 +48,11 @@ public class RSSParser {
 			} else if (parser.getDepth() != 3) {
 				continue;
 			} else if (name.equalsIgnoreCase("pubDate")) {
-				Date date = Utils.parseDate(parser.nextText());
+				Date date = DateUtils.parseDate(parser.nextText());
 				if (date != null)
 					feed.pubDate = date;
 			} else if (name.equalsIgnoreCase("lastBuildDate")) {
-				Date date = Utils.parseDate(parser.nextText());
+				Date date = DateUtils.parseDate(parser.nextText());
 				if (date != null)
 					feed.lastBuildDate = date;
 			} else if (name.equalsIgnoreCase("title") && parser.getNamespace().equals("")) {
@@ -90,7 +91,7 @@ public class RSSParser {
 				} else if (namespace.equals("") && name.equalsIgnoreCase("description")) {
 					item.description  = parser.nextText();
 				} else if (name.equalsIgnoreCase("pubDate")) {
-					item.publicationDate = Utils.parseDate(parser.nextText());
+					item.publicationDate = DateUtils.parseDate(parser.nextText());
 				} else if (name.equalsIgnoreCase("enclosure")) {
 					item.mediaURL = parser.getAttributeValue(null, "url");
 //					try {

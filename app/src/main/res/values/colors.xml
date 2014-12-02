@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lv_back">#ddd</color>
+    <color name="lv_divider">#567</color>
+</resources>

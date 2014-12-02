@@ -1,4 +1,4 @@
-package com.dev.orium.reader;
+package com.dev.orium.reader.Utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,11 +9,20 @@ import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by y.drobysh on 19.11.2014.
  */
-public class Utils {
+public class AppUtils {
+    private static Context context;
 
+    public static void init(Context ctx) {
+        context = ctx;
+    }
 
     public static int getScreenWidth(Activity activity) {
 
@@ -21,7 +30,6 @@ public class Utils {
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
 
-//        float density  = activity.getResources().getDisplayMetrics().density;
         return outMetrics.widthPixels;
     }
 
@@ -31,7 +39,6 @@ public class Utils {
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
 
-//        float density  = activity.getResources().getDisplayMetrics().density;
         return outMetrics;
     }
 

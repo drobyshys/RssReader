@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.content.Context;
 
+import com.dev.orium.reader.events.FeedUpdatedEvent;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.data.RssProvider;
 import com.dev.orium.reader.model.RssItem;
@@ -15,6 +16,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
@@ -68,7 +71,6 @@ public class UpdateService extends IntentService {
 
 
                 cupboard().withContext(this).put(RssProvider.FEEDS_URI, feed);
-
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (XmlPullParserException e) {
@@ -80,6 +82,7 @@ public class UpdateService extends IntentService {
 
 
         }
+        EventBus.getDefault().post(new FeedUpdatedEvent(id));
     }
 
     private void handleActionUpdateAll() {

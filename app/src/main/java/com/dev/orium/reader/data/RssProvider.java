@@ -78,6 +78,11 @@ public class RssProvider extends ContentProvider {
                         .orderBy(sortOrder)
                         .getCursor();
                 break;
+            case RSS_ITEM:
+                cursor = cupboard().withDatabase(db).query(RssItem.class)
+                        .byId(ContentUris.parseId(uri))
+                        .getCursor();
+                break;
         }
         if (cursor != null) {
             cursor.setNotificationUri(getContext().getContentResolver(), uri);

@@ -1,8 +1,10 @@
-package com.dev.orium.reader;
+package com.dev.orium.reader.Utils;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.dev.orium.reader.Settings;
 
 /**
  * Created by y.drobysh on 24.11.2014.

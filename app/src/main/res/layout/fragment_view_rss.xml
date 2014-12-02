@@ -2,51 +2,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:paddingLeft="@dimen/padding_big"
-              android:paddingRight="@dimen/padding_big">
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textColor="#000"
-        android:textStyle="bold"
-        android:text="@string/hello_blank_fragment"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#44a"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="4dp"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="12dp"
-        >
-        <TextView
-            android:id="@+id/tvFeedTitle"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:text="dfasd fsad fASFF "
-            android:ellipsize="end"
-            android:singleLine="true"
-            />
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="Sennya 11:32"
-            android:paddingLeft="12dp"
-            android:paddingRight="5dp"
-            />
-    </LinearLayout>
+              android:orientation="vertical">
     <WebView
+        android:id="@+id/wvContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></WebView>
 </LinearLayout>

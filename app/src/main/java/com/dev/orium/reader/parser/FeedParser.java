@@ -3,6 +3,10 @@ package com.dev.orium.reader.parser;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.model.RssItem;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -39,11 +43,22 @@ public class FeedParser {
 			throw new UnknownFeedException();
 		}
 
-        try {
-            URL url = new URL(feed.urlFeed);
-            feed.iconUrl = url.getProtocol() + "://" + url.getAuthority() + "/favicon.ico";
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        processThumbnails(feed.entries);
+    }
+
+    private static void processThumbnails(List<RssItem> entries) {
+        if (entries == null) return;
+        int size = entries.size();
+        for (int i = 0; i < size; i++) {
+            RssItem item = entries.get(i);
+            if (item.mediaURL != null && item.mediaURL.trim().length() > 0)
+                continue;
+
+            Document doc = Jsoup.parse(item.description);
+            Elements images = doc.select("img");
+            if (images.size() > 0) {
+                item.mediaURL = images.get(0).absUrl("src");
+            }
         }
     }
 

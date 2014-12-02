@@ -54,6 +54,6 @@ public class MenuFeedAdapter extends CursorAdapter {
         Feed feed = mCupboard.withCursor(cursor).get(Feed.class);
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.title.setText(Html.fromHtml(feed.title));
-        ImageLoader.getInstance().displayImage(feed.iconUrl, holder.icon);
+        ImageLoader.getInstance().displayImage(feed.thumbnail, holder.icon);
     }
 }

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.dev.orium.reader.App;
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.MainController;
 
@@ -39,8 +40,9 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        savedState = savedInstanceState;
         super.onCreate(savedInstanceState);
+
+        savedState = savedInstanceState;
 
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);

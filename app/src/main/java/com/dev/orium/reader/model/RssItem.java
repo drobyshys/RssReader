@@ -7,6 +7,8 @@ import java.util.Date;
  */
 public class RssItem {
 
+    public static final String PUBLICATION_DATE = "publicationDate";
+
     public long _feedId;
     public Long _id;
 

@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dev.orium.reader.R;
-import com.dev.orium.reader.Utils;
+import com.dev.orium.reader.Utils.AppUtils;
 import com.dev.orium.reader.adapters.FeedSearchAdapter;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.data.RssProvider;
@@ -92,7 +92,7 @@ public class AddFeedActivity extends ActionBarActivity {
         params.dimAmount = 0.1f;
         getWindow().setAttributes((WindowManager.LayoutParams) params);
 
-        DisplayMetrics metrics = Utils.getScreenMetrics(this);
+        DisplayMetrics metrics = AppUtils.getScreenMetrics(this);
         // This sets the window size, while working around the IllegalStateException thrown by ActionBarView
         getWindow().setLayout(Math.min(metrics.widthPixels, 900) ,Math.min(metrics.heightPixels, 1200));
     }
@@ -121,14 +121,14 @@ public class AddFeedActivity extends ActionBarActivity {
 
     @OnClick(R.id.btnSearch)
     void search() {
-        if (!Utils.checkInternetConnection(this)) {
+        if (!AppUtils.checkInternetConnection(this)) {
             Toast.makeText(this, R.string.check_connection, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String query = etQuery.getText().toString().trim();
         if (query != null) {
-            Utils.hideKeyboard(this, etQuery);
+            AppUtils.hideKeyboard(this, etQuery);
 
             searchFeedTask = new SearchFeedTask(this);
             searchFeedTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);

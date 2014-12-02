@@ -1,12 +1,17 @@
-package com.dev.orium.reader.parser;
+package com.dev.orium.reader.Utils;
+
+import android.content.Context;
+
+import com.dev.orium.reader.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class Utils {
+public class DateUtils {
 	
 	final static SimpleDateFormat dateFormats[] = new SimpleDateFormat[] {
 			new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
@@ -44,7 +49,51 @@ public class Utils {
 			new SimpleDateFormat("d MMM yyyy HH:mm:ss z", Locale.getDefault()),
 	};
 
-	static Date parseDate(String date) {
+    private static SimpleDateFormat dateF;
+    private static SimpleDateFormat timeF;
+    private static int year;
+    private static String yesterday;
+    private static Calendar calendar;
+    private static int todayDay;
+    private static String today;
+
+    private static Context context;
+
+
+
+    public static void init(Context ctx) {
+        context = ctx;
+
+        calendar = Calendar.getInstance();
+
+        dateF = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        timeF = new SimpleDateFormat(", hh.mm", Locale.getDefault());
+
+
+        today = context.getString(R.string.today);
+        yesterday = context.getString(R.string.yesterday);
+
+        calendar.setTime(new Date());
+        todayDay = calendar.get(Calendar.DAY_OF_YEAR);
+        year = calendar.get(Calendar.YEAR);
+    }
+
+    public static String getDateString(Date date) {
+        calendar.setTime(date);
+
+        int day = calendar.get(Calendar.DAY_OF_YEAR);
+        if (calendar.get(Calendar.YEAR) == year) {
+            if (day == todayDay) {
+                return today + timeF.format(date);
+            }
+            if (day == todayDay - 1) {
+                return yesterday + timeF.format(date);
+            }
+        }
+        return dateF.format(date);
+    }
+
+	public static Date parseDate(String date) {
 		for (SimpleDateFormat format : dateFormats) {
 			format.setTimeZone(TimeZone.getTimeZone("UTC"));
 			try {

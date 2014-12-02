@@ -1,5 +1,7 @@
 package com.dev.orium.reader.parser;
 
+import com.dev.orium.reader.Utils.AppUtils;
+import com.dev.orium.reader.Utils.DateUtils;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.model.RssItem;
 
@@ -8,7 +10,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AtomParser {
 
@@ -22,7 +23,7 @@ public class AtomParser {
 				else if (isAtomElement(parser, "icon"))
 					feed.thumbnail  = parser.nextText();
 				else if (isAtomElement(parser, "updated"))
-					feed.lastBuildDate  = Utils.parseDate(parser.nextText());
+					feed.lastBuildDate  = DateUtils.parseDate(parser.nextText());
 				else if (isAtomElement(parser, "entry"))
 					break;
 			}
@@ -60,9 +61,9 @@ public class AtomParser {
 				else if (isAtomElement(parser, "content"))
 					item.description  = parser.nextText();
 				else if (isAtomElement(parser, "published"))
-					item.publicationDate = Utils.parseDate(parser.nextText());
+					item.publicationDate = DateUtils.parseDate(parser.nextText());
 				else if (isAtomElement(parser, "updated") && item.publicationDate == null)
-					item.publicationDate = Utils.parseDate(parser.nextText());
+					item.publicationDate = DateUtils.parseDate(parser.nextText());
 			} else if (eventType == XmlPullParser.END_TAG) {
 				if (isAtomElement(parser, "entry")) {
                     item._feedId = feed._id;

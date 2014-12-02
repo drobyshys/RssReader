@@ -21,9 +21,13 @@ public class RssViewActivity extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
+            ViewRssFragment fragment = new ViewRssFragment();
+
+            if (getIntent() != null)
+                fragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new ViewRssFragment())
+                    .replace(R.id.container, fragment)
                     .commit();
 
         }

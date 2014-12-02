@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.dev.orium.reader.Utils.AppUtils;
+import com.dev.orium.reader.Utils.SharedUtils;
 import com.dev.orium.reader.activities.AddFeedActivity;
 import com.dev.orium.reader.activities.MainActivity;
 import com.dev.orium.reader.activities.RssViewActivity;
@@ -75,7 +77,7 @@ public class MainController {
         }
 
         if (isTabletMode) {
-            fullWidth = Utils.getScreenWidth(activity);
+            fullWidth = AppUtils.getScreenWidth(activity);
             smallWidth = fullWidth / 3;
             bigWidth = smallWidth * 2;
         }
@@ -161,16 +163,13 @@ public class MainController {
         mFragmentFeed.setFeed(feed);
     }
 
-    public void onFeedItemClick() {
+    public void onRssItemClick(long id) {
         if (isTabletMode) {
-            if (mFragmentRss == null) {
-                mFragmentRss = new ViewRssFragment();
-                mFragmentRss.setController(this);
-            }
             showRssContainer();
             menuItemFull.setVisible(true);
         } else {
             Intent rssIntent = new Intent(mActivity, RssViewActivity.class);
+            rssIntent.putExtra(ViewRssFragment.EXTRAS_RSS_ITEM_ID, id);
             mActivity.startActivity(rssIntent);
         }
     }
@@ -195,6 +194,10 @@ public class MainController {
     }
 
     private void showRssContainer() {
+        if (mFragmentRss == null) {
+            mFragmentRss = new ViewRssFragment();
+            mFragmentRss.setController(this);
+        }
         if (!mFragmentRss.isAdded()) {
             mActivity.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.detailContainer, mFragmentRss)
@@ -212,6 +215,10 @@ public class MainController {
         if (mIsRssShown) {
             showMenu();
             mIsRssShown = !mIsRssShown;
+            return true;
+        }
+        if (!isTabletMode && drawerLayout.isDrawerOpen(contMenu)) {
+            drawerLayout.openDrawer(contMenu);
             return true;
         }
 
@@ -270,7 +277,7 @@ public class MainController {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_ADD_FEED:
-                int feedId = data.getIntExtra(FEED_ID, -1);
+                int feedId = data != null ? data.getIntExtra(FEED_ID, -1) : -1;
                 if (feedId != -1)
                     UpdateService.startActionUpdate(mActivity.getApplicationContext(), feedId);
                 break;
