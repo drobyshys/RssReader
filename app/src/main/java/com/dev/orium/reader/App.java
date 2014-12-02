@@ -14,26 +14,24 @@ import com.nostra13.universalimageloader.utils.L;
 import java.util.Arrays;
 import java.util.List;
 
-import dagger.ObjectGraph;
-
 /**
  * Created by y.drobysh on 17.11.2014.
  */
 public class App extends Application {
 
-    private ObjectGraph graph;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-//        graph = ObjectGraph.create(getModules().toArray());
 
         AppUtils.init(this);
         SharedUtils.init(this);
         DateUtils.init(this);
 
 
+        initImageLoader();
+    }
+
+    private void initImageLoader() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_stub) // resource or drawable
                 .showImageForEmptyUri(R.drawable.ic_stub) // resource or drawable
@@ -55,24 +53,11 @@ public class App extends Application {
 
         ImageLoader.getInstance().init(config);
     }
-
-    protected List<Object> getModules() {
-        return Arrays.asList(
-                new AndroidModule(this),
-                new DemoModule()
-        );
-    }
-
-    public void inject(Object object) {
-        graph.inject(object);
-    }
 }
 
 
 //todo
 /*
-
-update
 readed/unreader
 favorites
 save to disk?
