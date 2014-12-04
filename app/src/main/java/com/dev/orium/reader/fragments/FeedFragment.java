@@ -17,9 +17,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.dev.orium.reader.MainController;
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.adapters.RssItemAdapter;
+import com.dev.orium.reader.controller.Controller;
 import com.dev.orium.reader.data.RssProvider;
 import com.dev.orium.reader.events.FeedUpdatedEvent;
 import com.dev.orium.reader.model.Feed;
@@ -46,7 +46,7 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
     @InjectView(R.id.swipeLayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     
-    private MainController controller;
+    private Controller controller;
     private RssItemAdapter adapter;
     private Feed feed;
 
@@ -142,11 +142,11 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
         controller.onRssItemClick(id);
     }
 
-    public void setController(MainController controller) {
+    public void setController(Controller controller) {
         this.controller = controller;
     }
 
-    public MainController getController() {
+    public Controller getController() {
         return controller;
     }
 

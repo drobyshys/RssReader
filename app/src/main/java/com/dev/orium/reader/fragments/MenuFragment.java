@@ -1,7 +1,6 @@
 package com.dev.orium.reader.fragments;
 
 
-
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,8 +15,8 @@ import android.widget.ListView;
 
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.adapters.MenuFeedAdapter;
+import com.dev.orium.reader.controller.Controller;
 import com.dev.orium.reader.data.RssProvider;
-import com.dev.orium.reader.MainController;
 import com.dev.orium.reader.model.Feed;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
@@ -30,7 +29,7 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
 
 
     private ListView list;
-    private MainController controller;
+    private Controller controller;
     private MenuFeedAdapter adapter;
     private boolean firstLoad;
 
@@ -41,7 +40,7 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+//        setRetainInstance(true);
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -65,13 +64,10 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
         list.setOnItemClickListener(this);
     }
 
-    public void setController(MainController controller) {
+    public void setController(Controller controller) {
         this.controller = controller;
     }
 
-    public MainController getController() {
-        return controller;
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -2,55 +2,37 @@ package com.dev.orium.reader.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
-import com.dev.orium.reader.App;
 import com.dev.orium.reader.R;
-import com.dev.orium.reader.MainController;
+import com.dev.orium.reader.controller.Controller;
+import com.dev.orium.reader.controller.MainController;
+import com.dev.orium.reader.controller.TabletController;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
 
 
 public class MainActivity extends ActionBarActivity {
 
 
-    @Optional
-    @InjectView(R.id.detailContainer)
-    FrameLayout detailContainer;
-    @Optional
-    @InjectView(R.id.container)
-    FrameLayout container;
-
-    @Optional @InjectView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
-
-
-
     private boolean isTablet;
     private boolean expanded;
-    private MainController controller;
+    private Controller controller;
 
-    private Bundle savedState;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        savedState = savedInstanceState;
-
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
 
-        this.isTablet = drawerLayout == null;
+        this.isTablet = findViewById(R.id.drawer_layout) == null;
 
-        controller = new MainController(this, savedInstanceState);
+        if (!isTablet) controller = new MainController(this, state);
+        else           controller = new TabletController(this, state);
     }
 
 
@@ -75,7 +57,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        controller.saveData();
+        controller.saveData(null);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        controller.saveData(outState);
     }
 
     @Override

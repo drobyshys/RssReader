@@ -9,11 +9,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * Created by y.drobysh on 19.11.2014.
  */
@@ -31,6 +26,15 @@ public class AppUtils {
         display.getMetrics(outMetrics);
 
         return outMetrics.widthPixels;
+    }
+
+    public static int getScreenHeight(Activity activity) {
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        return outMetrics.heightPixels;
     }
 
     public static DisplayMetrics getScreenMetrics(Activity activity) {

@@ -1,6 +1,7 @@
 package com.dev.orium.reader.ui;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
@@ -18,6 +19,7 @@ public class PaneAnimator implements Animation.AnimationListener {
     private final int _fullWidth;
     private final int _smallWidth;
     private final int _bigWidth;
+    private final boolean _isPortrait;
 
     private int _runningAnimationsCount;
 
@@ -30,12 +32,17 @@ public class PaneAnimator implements Animation.AnimationListener {
         this.feed = feed;
         this.rssView = rssView;
 
+        _isPortrait = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+
         _fullWidth = AppUtils.getScreenWidth(context);
         _smallWidth = _fullWidth / 3;
         _bigWidth = _smallWidth * 2;
 
         menu.getLayoutParams().width = _smallWidth;
+        feed.getLayoutParams().width = _bigWidth;
         rssView.getLayoutParams().width = _bigWidth;
+
+
     }
 
     public void onMenuItem() {
@@ -44,19 +51,25 @@ public class PaneAnimator implements Animation.AnimationListener {
 
 
     public void showRss() {
-
         if (isMenuVisible())
             moveByX(menu, -_smallWidth);
-
-        changeWidthTo(feed, _smallWidth);
 
         if (mIsRssShown)
             return;
 
+        changeWidthTo(feed, _isPortrait ? 0 : _smallWidth);
+
         mIsRssShown = true;
 
-        moveByX(feed, 0);
-        moveByX(rssView, _smallWidth);
+        if (_isPortrait) {
+            changeWidthTo(rssView, _fullWidth);
+            moveByX(feed, 0);
+            moveByX(rssView, 0);
+            isFull = true;
+        } else {
+            moveByX(feed, 0);
+            moveByX(rssView, _smallWidth);
+        }
     }
 
     public boolean isMenuVisible() {

@@ -2,7 +2,6 @@ package com.dev.orium.reader;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
 import com.dev.orium.reader.Utils.AppUtils;
 import com.dev.orium.reader.Utils.DateUtils;
 import com.dev.orium.reader.Utils.SharedUtils;
@@ -12,10 +11,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.utils.L;
 
-import io.fabric.sdk.android.Fabric;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created by y.drobysh on 17.11.2014.
  */
@@ -24,7 +19,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+//        Fabric.with(this, new Crashlytics());
 
         AppUtils.init(this);
         SharedUtils.init(this);

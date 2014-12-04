@@ -21,10 +21,10 @@ import android.widget.Toast;
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.Utils.AppUtils;
 import com.dev.orium.reader.adapters.FeedSearchAdapter;
-import com.dev.orium.reader.model.Feed;
+import com.dev.orium.reader.controller.MainController;
 import com.dev.orium.reader.data.RssProvider;
+import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.network.RequestHelper;
-import com.dev.orium.reader.MainController;
 
 import java.util.ArrayList;
 import java.util.List;

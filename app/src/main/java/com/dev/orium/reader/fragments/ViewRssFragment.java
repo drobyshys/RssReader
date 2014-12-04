@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.dev.orium.reader.MainController;
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.Utils.DateUtils;
+import com.dev.orium.reader.controller.Controller;
 import com.dev.orium.reader.data.RssProvider;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.model.RssItem;
@@ -31,7 +31,7 @@ public class ViewRssFragment extends Fragment {
     @InjectView(R.id.wvContent)
     WebView wvContent;
 
-    private MainController controller;
+    private Controller controller;
     private RssItem rssItem;
     private Feed feed;
     private ProviderCompartment cupboard;
@@ -43,6 +43,12 @@ public class ViewRssFragment extends Fragment {
 
     public ViewRssFragment() {
         // Required empty public constructor
+    }
+
+    public static ViewRssFragment newInstance() {
+        ViewRssFragment fragment = new ViewRssFragment();
+        fragment.setArguments(new Bundle());
+        return fragment;
     }
 
 
@@ -108,11 +114,11 @@ public class ViewRssFragment extends Fragment {
         wvContent.loadDataWithBaseURL(null, content.toString(), "text/html", "utf-8", null);
     }
 
-    public void setController(MainController controller) {
+    public void setController(Controller controller) {
         this.controller = controller;
     }
 
-    public MainController getController() {
+    public Controller getController() {
         return controller;
     }
 
@@ -137,9 +143,11 @@ public class ViewRssFragment extends Fragment {
 
     public void setRssId(long rssId) {
         this.rssId = rssId;
-        Bundle args = new Bundle();
+        Bundle args = getArguments();
+        if (args == null) {
+            args = new Bundle();
+        }
         args.putLong(EXTRAS_RSS_ITEM_ID, rssId);
-        setArguments(args);
     }
 //        super.onViewCreated(v, savedInstanceState);
 //        ButterKnife.inject(this, v);
