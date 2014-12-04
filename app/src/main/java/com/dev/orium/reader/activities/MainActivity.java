@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
 
         this.isTablet = drawerLayout == null;
 
-        controller = new MainController(this);
+        controller = new MainController(this, savedInstanceState);
     }
 
 

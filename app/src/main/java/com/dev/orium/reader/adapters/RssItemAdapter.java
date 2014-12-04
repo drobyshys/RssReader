@@ -86,7 +86,7 @@ public class RssItemAdapter extends CursorAdapter {
                 view.setVisibility(loadedImage != null ? View.VISIBLE : View.GONE);
             }
             @Override public void onLoadingCancelled(String imageUri, View view) {
-                view.setVisibility(View.GONE);
+                if (view != null) view.setVisibility(View.GONE);
             }
         });
     }

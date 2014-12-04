@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.dev.orium.reader.MainController;
 import com.dev.orium.reader.R;
@@ -53,12 +52,20 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public static FeedFragment newInstance(long lastFeedId) {
         FeedFragment fragment = new FeedFragment();
+        Bundle args = new Bundle();
         if (lastFeedId >= 0) {
-            Bundle args = new Bundle();
             args.putLong(ARGS_LAST_FEED, lastFeedId);
-            fragment.setArguments(args);
         }
+        fragment.setArguments(args);
         return fragment;
+    }
+
+    public void updateArgs(long feedId) {
+        Bundle args = getArguments();
+        if (args == null) {
+            args = new Bundle();
+        }
+        args.putLong(ARGS_LAST_FEED, feedId);
     }
 
     public FeedFragment() {
@@ -68,7 +75,7 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+//        setRetainInstance(true);
 
         Bundle args = getArguments();
         if (args != null) {
@@ -123,7 +130,8 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
         UpdateService.startActionUpdate(getActivity().getApplicationContext(), feed._id.intValue());
     }
 
-    public void onEvent(FeedUpdatedEvent event) {
+
+    public void onEventMainThread(FeedUpdatedEvent event) {
         if (event.getId() == feed._id)
             mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -168,6 +176,8 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public void setFeed(Feed newFeed) {
         feed = newFeed;
-        getLoaderManager().restartLoader(0, null, this);
+        updateArgs(newFeed._id);
+        if (isAdded())
+            getLoaderManager().restartLoader(0, null, this);
     }
 }

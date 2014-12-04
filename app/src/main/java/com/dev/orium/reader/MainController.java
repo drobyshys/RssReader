@@ -2,7 +2,8 @@ package com.dev.orium.reader;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,17 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.dev.orium.reader.Utils.AppUtils;
 import com.dev.orium.reader.Utils.SharedUtils;
 import com.dev.orium.reader.activities.AddFeedActivity;
 import com.dev.orium.reader.activities.MainActivity;
 import com.dev.orium.reader.activities.RssViewActivity;
+import com.dev.orium.reader.data.DatabaseHelper;
 import com.dev.orium.reader.fragments.FeedFragment;
 import com.dev.orium.reader.fragments.MenuFragment;
 import com.dev.orium.reader.fragments.ViewRssFragment;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.network.UpdateService;
-import com.dev.orium.reader.ui.ResizeWidthAnimation;
+import com.dev.orium.reader.ui.PaneAnimator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,16 +37,16 @@ public class MainController {
 
     private static final int REQUEST_ADD_FEED = 66;
 
-    @Optional
-    @InjectView(R.id.detailContainer)
+    private static final String FRAGMENT_FEED_TAG = "feed";
+    private static final String FRAGMENT_RSS_TAG = "rss";
+
+    @Optional @InjectView(R.id.detailContainer)
     FrameLayout contDetail;
     @InjectView(R.id.container)
-    FrameLayout contContent;
-    @Optional
-    @InjectView(R.id.menuContainer)
+    FrameLayout contFeed;
+    @Optional @InjectView(R.id.menuContainer)
     FrameLayout contMenu;
-    @Optional
-    @InjectView(R.id.drawer_layout)
+    @Optional @InjectView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
 
@@ -56,19 +57,15 @@ public class MainController {
     private ViewRssFragment mFragmentRss;
 
 
-    private boolean mIsRssShown;
     private boolean isTabletMode;
-    private boolean rssViewFull;
-
-    private int smallWidth, bigWidth;
-    private int fullWidth;
 
     private MenuItem menuItemFull;
     private MenuItem menuItemAdd;
     private Feed mCurrentFeed;
+    private PaneAnimator mPaneAnimator;
 
 
-    public MainController(MainActivity activity) {
+    public MainController(MainActivity activity, Bundle savedInstanceState) {
         this.mActivity = activity;
         ButterKnife.inject(this, activity);
 
@@ -77,14 +74,15 @@ public class MainController {
         }
 
         if (isTabletMode) {
-            fullWidth = AppUtils.getScreenWidth(activity);
-            smallWidth = fullWidth / 3;
-            bigWidth = smallWidth * 2;
+            mPaneAnimator = new PaneAnimator(activity, contMenu, contFeed, contDetail);
+        }
+
+        if (!isTabletMode) {
+            setupDrawer();
         }
 
         mFragmentMenu = new MenuFragment();
         mFragmentMenu.setController(this);
-
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.menuContainer, mFragmentMenu)
                 .commit();
@@ -95,19 +93,39 @@ public class MainController {
             mCurrentFeed = Feed.getById(activity, lastSelectedFeedId);
         }
 
-        mFragmentFeed = FeedFragment.newInstance(lastSelectedFeedId);
+        mFragmentFeed = (FeedFragment) mActivity.getSupportFragmentManager().findFragmentByTag(FRAGMENT_FEED_TAG);
+        if (mFragmentFeed == null) {
+            mFragmentFeed = FeedFragment.newInstance(lastSelectedFeedId);
+        }
         mFragmentFeed.setController(this);
 
-        activity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, mFragmentFeed)
-                .commit();
+
+        mFragmentRss = (ViewRssFragment) activity.getSupportFragmentManager().findFragmentByTag(FRAGMENT_RSS_TAG);
+        boolean isRssVisible = false;
 
         if (!isTabletMode) {
-            setupDrawer();
-        } else if (mCurrentFeed != null) {
-            showFeedContainer();
+            if (mFragmentRss == null) {
+                mFragmentRss = new ViewRssFragment();
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, mFragmentFeed, FRAGMENT_FEED_TAG)
+                        .commit();
+            } else {
+                isRssVisible = true;
+            }
+        } else {
+            mActivity.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.detailContainer, mFragmentRss)
+                    .commit();
         }
+        mFragmentRss.setController(this);
 
+
+
+        if (mCurrentFeed != null && !isRssVisible)
+            selectFeed(mCurrentFeed);
+        else if (DatabaseHelper.getFeedCount(activity) == 0) {
+            startNewFeedActivity();
+        }
     }
 
     private void setupDrawer() {
@@ -138,7 +156,7 @@ public class MainController {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                contContent.setTranslationX(slideOffset * contMenu.getWidth());
+                contFeed.setTranslationX(slideOffset * contMenu.getWidth());
             }
         };
         drawerLayout.post(new Runnable() {
@@ -153,114 +171,83 @@ public class MainController {
     }
 
 
-    public void onMenuItemClick(Feed feed) {
+    public void selectFeed(Feed feed) {
+        if (mFragmentRss.isAdded()) {
+            mActivity.getSupportFragmentManager().popBackStack();
+        }
         if (isTabletMode) {
-            showFeedContainer();
+            mPaneAnimator.onMenuItem();
         } else {
-            mCurrentFeed = feed;
             drawerLayout.closeDrawer(contMenu);
         }
+
+        mCurrentFeed = feed;
         mFragmentFeed.setFeed(feed);
     }
 
     public void onRssItemClick(long id) {
         if (isTabletMode) {
-            showRssContainer(id);
+            mPaneAnimator.showRss();
+
+
             menuItemFull.setVisible(true);
         } else {
-            Intent rssIntent = new Intent(mActivity, RssViewActivity.class);
-            rssIntent.putExtra(ViewRssFragment.EXTRAS_RSS_ITEM_ID, id);
-            mActivity.startActivity(rssIntent);
+            mActivity.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, mFragmentRss, FRAGMENT_RSS_TAG)
+                    .addToBackStack(null)
+                    .commit();
         }
-    }
-
-    private void showFeedContainer() {
-        changeWidthTo(contMenu, smallWidth);
-        changeWidthTo(contContent, bigWidth);
-    }
-
-    private void changeWidthTo(FrameLayout frame, int newWidth) {
-        ResizeWidthAnimation anim = new ResizeWidthAnimation(frame, newWidth);
-        anim.setDuration(500);
-        frame.startAnimation(anim);
-    }
-
-    private void showRssContainer(long id) {
-        showRssContainer();
         mFragmentRss.setRssItem(id);
     }
 
-    private void showRssContainer() {
-        if (mFragmentRss == null) {
-            mFragmentRss = new ViewRssFragment();
-            mFragmentRss.setController(this);
-        }
-        if (!mFragmentRss.isAdded()) {
-            mActivity.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.detailContainer, mFragmentRss)
-                    .commit();
-        }
-        mIsRssShown = true;
 
-        changeWidthTo(contMenu, 0);
-        changeWidthTo(contContent, smallWidth);
-        changeWidthTo(contDetail, bigWidth);
-        menuItemAdd.setVisible(false);
-    }
 
     public boolean onBackPressed() {
-        if (mIsRssShown) {
-            showMenu();
-            mIsRssShown = !mIsRssShown;
+        if (isTabletMode) {
+            mPaneAnimator.onBackPress();
+
+            menuItemFull.setVisible(false);
+            menuItemAdd.setVisible(true);
+            return !mPaneAnimator.isMenuVisible();
+        } else if (mFragmentRss.isAdded()) {
+            mActivity.getSupportFragmentManager().popBackStack();
             return true;
-        }
-        if (!isTabletMode && drawerLayout.isDrawerOpen(contMenu)) {
+        } else if (drawerLayout.isDrawerOpen(contMenu)) {
             drawerLayout.openDrawer(contMenu);
             return true;
         }
-
         return false;
     }
 
-    private void showMenu() {
-        changeWidthTo(contMenu, smallWidth);
-        changeWidthTo(contContent, bigWidth);
-        changeWidthTo(contDetail, 0);
 
-        menuItemFull.setVisible(false);
-        menuItemAdd.setVisible(true);
-    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item))
             return true;
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (mIsRssShown) {
-                    showMenu();
-                } else {
-                    changeWidthTo(contMenu, 0);
-                }
-                mIsRssShown = !mIsRssShown;
+//                if (mIsRssShown) {
+//                    showMenu();
+//                } else {
+//                    hideMenu();
+//                }
+//                mIsRssShown = !mIsRssShown;
                 return true;
             case R.id.menu_rss_fullscreen:
-                if (mIsRssShown && isTabletMode) {
-                    if (rssViewFull) {
-                        changeWidthTo(contContent, smallWidth);
-                        changeWidthTo(contDetail, bigWidth);
-                    } else {
-                        changeWidthTo(contContent, 0);
-                        changeWidthTo(contDetail, fullWidth);
-                    }
-                    rssViewFull = !rssViewFull;
+                if (isTabletMode) {
+                    mPaneAnimator.toggleFullScreen();
                 }
                 return true;
             case R.id.menu_add_feed:
-                Intent i = new Intent(mActivity, AddFeedActivity.class);
-                mActivity.startActivityForResult(i, REQUEST_ADD_FEED);
+                startNewFeedActivity();
                 return true;
         }
         return false;
+    }
+
+    private void startNewFeedActivity() {
+        Intent i = new Intent(mActivity, AddFeedActivity.class);
+        mActivity.startActivityForResult(i, REQUEST_ADD_FEED);
     }
 
     public void onCreateOptionsMenu(Menu menu) {
@@ -275,8 +262,13 @@ public class MainController {
         switch (requestCode) {
             case REQUEST_ADD_FEED:
                 int feedId = data != null ? data.getIntExtra(FEED_ID, -1) : -1;
-                if (feedId != -1)
+                if (feedId != -1) {
                     UpdateService.startActionUpdate(mActivity.getApplicationContext(), feedId);
+                    Feed feed = Feed.getById(mActivity, feedId);
+                    if (feed != null)
+                        selectFeed(feed);
+                }
+
                 break;
         }
     }

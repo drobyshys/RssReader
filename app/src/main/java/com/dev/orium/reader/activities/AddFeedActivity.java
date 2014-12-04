@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -35,7 +36,7 @@ import butterknife.OnItemClick;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class AddFeedActivity extends ActionBarActivity {
+public class AddFeedActivity extends ActionBarActivity implements TextView.OnEditorActionListener {
 
     public static final String TAG = "AddFeedActivity";
     public static final String SELECTED_FEED = "feed";
@@ -51,15 +52,8 @@ public class AddFeedActivity extends ActionBarActivity {
     @InjectView(android.R.id.empty)
     TextView tvEmpty;
 
-
-
-
-
     private FeedSearchAdapter adapter;
     private SearchFeedTask searchFeedTask;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +73,7 @@ public class AddFeedActivity extends ActionBarActivity {
             searchFeedTask.setActivity(this);
             pbLoading.setVisibility(View.VISIBLE);
         }
+        etQuery.setOnEditorActionListener(this);
 
         adapter = new FeedSearchAdapter(this, new ArrayList<Feed>());
         listView.setAdapter(adapter);
@@ -146,6 +141,15 @@ public class AddFeedActivity extends ActionBarActivity {
         data.putExtra(MainController.FEED_ID, carId);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+            search();
+            return true;
+        }
+        return false;
     }
 
     private static class SearchFeedTask extends AsyncTask<String, Void, List<Feed>> {

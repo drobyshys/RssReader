@@ -32,6 +32,7 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
     private ListView list;
     private MainController controller;
     private MenuFeedAdapter adapter;
+    private boolean firstLoad;
 
     public MenuFragment() {
         // Required empty public constructor
@@ -43,6 +44,8 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
         setRetainInstance(true);
 
         getLoaderManager().initLoader(0, null, this);
+
+        firstLoad = true;
     }
 
     @Override
@@ -74,7 +77,7 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cursor c = (Cursor) adapter.getItem(position);
         Feed feed = cupboard().withCursor(c).get(Feed.class);
-        controller.onMenuItemClick(feed);
+        controller.selectFeed(feed);
     }
 
     @Override
@@ -87,6 +90,13 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onLoadFinished(Loader<Cursor> objectLoader, Cursor o) {
         adapter.swapCursor(o);
+
+        if (firstLoad && o.getCount() == 1) {
+            Feed feed = cupboard().withCursor(o).get(Feed.class);
+            controller.selectFeed(feed);
+        }
+
+        firstLoad = false;
     }
 
     @Override

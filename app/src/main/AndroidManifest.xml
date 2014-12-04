@@ -37,6 +37,7 @@
             android:name="com.dev.orium.reader.network.UpdateService"
             android:exported="false" >
         </service>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="bcec240fd94cb354ea9f8fd73b2318eb17b645f7"/>
     </application>
 
 </manifest>

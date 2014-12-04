@@ -39,4 +39,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        cupboard().withDatabase(db).upgradeTables();
         //migration here
     }
+
+
+    public static long getFeedCount(Context context) {
+        return cupboard().withContext(context).query(RssProvider.FEEDS_URI, Feed.class).getCursor().getCount();
+    }
 }

@@ -45,11 +45,6 @@ public class ViewRssFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ViewRssFragment newInstance(long id) {
-        ViewRssFragment fragment = new ViewRssFragment();
-
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +83,7 @@ public class ViewRssFragment extends Fragment {
     }
 
     public void setRssItem(long id) {
-        this.rssId = id;
+        setRssId(id);
         if (isAdded()) {
             getData(id);
             updateView();
@@ -123,22 +118,29 @@ public class ViewRssFragment extends Fragment {
 
 //    @Override
 
-//    public void onViewCreated(View v, Bundle savedInstanceState) {
-private void getData(long rssId) {
-    rssItem = cupboard
-            .query(ContentUris.withAppendedId(RssProvider.RSS_URI, rssId), RssItem.class)
-            .get();
-    if (rssItem != null) {
-        feed = cupboard
-                .query(ContentUris.withAppendedId(RssProvider.FEEDS_URI, rssItem._feedId), Feed.class)
+    //    public void onViewCreated(View v, Bundle savedInstanceState) {
+    private void getData(long rssId) {
+        rssItem = cupboard
+                .query(ContentUris.withAppendedId(RssProvider.RSS_URI, rssId), RssItem.class)
                 .get();
-        if (!rssItem.readed) {
-            rssItem.readed = true;
-            cupboard.put(RssProvider.RSS_URI, rssItem);
+        if (rssItem != null) {
+            feed = cupboard
+                    .query(ContentUris.withAppendedId(RssProvider.FEEDS_URI, rssItem._feedId), Feed.class)
+                    .get();
+            if (!rssItem.readed) {
+                rssItem.readed = true;
+                cupboard.put(RssProvider.RSS_URI, rssItem);
+            }
         }
+
     }
 
-}
+    public void setRssId(long rssId) {
+        this.rssId = rssId;
+        Bundle args = new Bundle();
+        args.putLong(EXTRAS_RSS_ITEM_ID, rssId);
+        setArguments(args);
+    }
 //        super.onViewCreated(v, savedInstanceState);
 //        ButterKnife.inject(this, v);
 //
