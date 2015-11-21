@@ -1,7 +1,5 @@
 package com.dev.orium.reader.fragments;
 
-
-import android.app.Activity;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -40,6 +38,8 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class FeedFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String ARGS_LAST_FEED = "last_feed";
+
+    private static final int LOADER_ID = 1;
 
     @InjectView(android.R.id.list) 
     ListView mListView;
@@ -87,13 +87,7 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
 
         EventBus.getDefault().register(this);
 
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
+        getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
     @Override
@@ -115,7 +109,6 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void initSwipeLayout() {
         mSwipeRefreshLayout.setColorSchemeColors(Color.GREEN, Color.RED, Color.BLUE);
-//        mSwipeRefreshLayout.setProgressBackgroundColor(R.color.dark);
         SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -135,7 +128,6 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
         if (event.getId() == feed._id)
             mSwipeRefreshLayout.setRefreshing(false);
     }
-
 
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -178,6 +170,6 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
         feed = newFeed;
         updateArgs(newFeed._id);
         if (isAdded())
-            getLoaderManager().restartLoader(0, null, this);
+            getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 }

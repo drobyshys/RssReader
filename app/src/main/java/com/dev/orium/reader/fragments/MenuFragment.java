@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.dev.orium.reader.R;
@@ -18,6 +19,10 @@ import com.dev.orium.reader.adapters.MenuFeedAdapter;
 import com.dev.orium.reader.controller.Controller;
 import com.dev.orium.reader.data.RssProvider;
 import com.dev.orium.reader.model.Feed;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
@@ -27,8 +32,11 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
  */
 public class MenuFragment extends Fragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-
-    private ListView list;
+    public static final int LOADER_ID = 0;
+    @InjectView(android.R.id.list)
+    ListView list;
+    @InjectView(R.id.btn_settings)
+    Button mBtnSettings;
     private Controller controller;
     private MenuFeedAdapter adapter;
     private boolean firstLoad;
@@ -40,9 +48,8 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
 
         firstLoad = true;
     }
@@ -50,10 +57,10 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        list = (ListView) inflater.inflate(R.layout.fragment_list, container, false);
-        return list;
+        View view = inflater.inflate(R.layout.fragment_menu, container, false);
+        ButterKnife.inject(this, view);
+        return view;
     }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -68,7 +75,6 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
         this.controller = controller;
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cursor c = (Cursor) adapter.getItem(position);
@@ -81,6 +87,11 @@ public class MenuFragment extends Fragment implements AdapterView.OnItemClickLis
         CursorLoader loader = new CursorLoader(getActivity());
         loader.setUri(RssProvider.FEEDS_URI);
         return loader;
+    }
+
+    @OnClick(R.id.btn_settings)
+    void onSettingsClick(View v) {
+
     }
 
     @Override

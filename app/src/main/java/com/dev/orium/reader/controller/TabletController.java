@@ -59,7 +59,6 @@ public class TabletController extends BaseController {
                     .replace(R.id.detailContainer, mFragmentRss, FRAGMENT_RSS_TAG)
                     .commit();
         }
-        mFragmentRss.setController(this);
 
         if (mCurrentFeed != null && savedInstanceState == null) {
             selectFeed(mCurrentFeed);

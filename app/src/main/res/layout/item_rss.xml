@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:padding="3dp">
+              android:background="@android:drawable/dialog_holo_light_frame">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -16,7 +16,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:text="dfasd fsad fASFF "
+            android:textColor="@android:color/black"
+            android:text="dfasd fsad fASFF"
             android:ellipsize="end"
             android:singleLine="true"
             />

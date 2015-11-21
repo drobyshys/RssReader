@@ -9,9 +9,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-/**
- * Created by y.drobysh on 19.11.2014.
- */
 public class AppUtils {
     private static Context context;
 

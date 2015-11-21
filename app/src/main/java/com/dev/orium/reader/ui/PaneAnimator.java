@@ -12,7 +12,6 @@ import com.dev.orium.reader.utils.AppUtils;
 * Created by y.drobysh on 02.12.2014.
 */
 public class PaneAnimator implements Animation.AnimationListener {
-//        private final Activity context;
     private final FrameLayout menu;
     private final FrameLayout feed;
     private final FrameLayout rssView;
@@ -27,7 +26,6 @@ public class PaneAnimator implements Animation.AnimationListener {
     private boolean isFull;
 
     public PaneAnimator(Activity context, FrameLayout menu, FrameLayout feed, FrameLayout rssView) {
-//            this.context = context;
         this.menu = menu;
         this.feed = feed;
         this.rssView = rssView;

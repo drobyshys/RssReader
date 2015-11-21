@@ -5,7 +5,6 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -50,4 +49,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.1.0@aar') {
         transitive = true;
     }
+    compile 'com.jakewharton.timber:timber:3.1.0'
+    compile 'com.android.support:design:23.1.1'
+    compile 'io.reactivex:rxjava:1.0.+'
+    compile 'io.reactivex:rxandroid:0.23.+'
 }

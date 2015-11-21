@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private boolean isTablet;
     private boolean expanded;
     private Controller controller;
@@ -29,15 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-
         this.isTablet = findViewById(R.id.drawer_layout) == null;
 
         if (!isTablet) controller = new MainController(this, state);
         else           controller = new TabletController(this, state);
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,6 +72,5 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (!controller.onBackPressed())
             super.onBackPressed();
-
     }
 }

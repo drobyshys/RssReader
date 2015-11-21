@@ -70,19 +70,27 @@ public class RssItemAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         Holder holder = (Holder) view.getTag();
         RssItem item = mCupboard.withCursor(cursor).get(RssItem.class);
+
         holder.date.setText(DateUtils.getDateString(item.publicationDate));
-//        holder.info.setText(Html.fromHtml(item.description));
         holder.info.setText(makeTitle(item));
         if (feed != null) {
             holder.feedTitle.setText(feed.title);
         }
+
         holder.icon.setVisibility(View.GONE);
+
         ImageLoader.getInstance().displayImage(item.mediaURL, holder.icon, new ImageLoadingListener() {
-            @Override public void onLoadingStarted(String imageUri, View view) { }
-            @Override public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 view.setVisibility(View.GONE);
             }
-            @Override public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 view.setVisibility(loadedImage != null ? View.VISIBLE : View.GONE);
             }
             @Override public void onLoadingCancelled(String imageUri, View view) {
@@ -102,6 +110,5 @@ public class RssItemAdapter extends CursorAdapter {
         spanString.setSpan(new ForegroundColorSpan(!item.readed ? Color.BLACK : Color.GRAY), 0, spanString.length(), 0);
         return spanString;
     }
-
 
 }
