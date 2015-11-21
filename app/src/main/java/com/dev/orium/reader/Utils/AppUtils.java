@@ -1,4 +1,4 @@
-package com.dev.orium.reader.Utils;
+package com.dev.orium.reader.utils;
 
 import android.app.Activity;
 import android.content.Context;

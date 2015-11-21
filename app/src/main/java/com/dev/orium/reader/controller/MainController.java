@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.dev.orium.reader.R;
-import com.dev.orium.reader.Utils.SharedUtils;
+import com.dev.orium.reader.utils.SharedUtils;
 import com.dev.orium.reader.activities.MainActivity;
 import com.dev.orium.reader.activities.RssViewActivity;
 import com.dev.orium.reader.data.DatabaseHelper;

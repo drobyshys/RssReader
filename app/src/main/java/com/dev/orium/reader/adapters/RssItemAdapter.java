@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dev.orium.reader.R;
-import com.dev.orium.reader.Utils.DateUtils;
+import com.dev.orium.reader.utils.DateUtils;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.model.RssItem;
 import com.nostra13.universalimageloader.core.ImageLoader;

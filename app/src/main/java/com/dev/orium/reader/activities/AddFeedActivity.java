@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dev.orium.reader.R;
-import com.dev.orium.reader.Utils.AppUtils;
+import com.dev.orium.reader.utils.AppUtils;
 import com.dev.orium.reader.adapters.FeedSearchAdapter;
 import com.dev.orium.reader.controller.MainController;
 import com.dev.orium.reader.data.RssProvider;

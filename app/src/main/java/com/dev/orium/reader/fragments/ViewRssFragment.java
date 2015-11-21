@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.dev.orium.reader.R;
-import com.dev.orium.reader.Utils.DateUtils;
+import com.dev.orium.reader.utils.DateUtils;
 import com.dev.orium.reader.controller.Controller;
 import com.dev.orium.reader.data.RssProvider;
 import com.dev.orium.reader.model.Feed;

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
-import com.dev.orium.reader.Utils.AppUtils;
+import com.dev.orium.reader.utils.AppUtils;
 
 /**
 * Created by y.drobysh on 02.12.2014.

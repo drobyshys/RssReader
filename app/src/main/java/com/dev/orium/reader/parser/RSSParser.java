@@ -1,7 +1,6 @@
 package com.dev.orium.reader.parser;
 
-import com.dev.orium.reader.Utils.AppUtils;
-import com.dev.orium.reader.Utils.DateUtils;
+import com.dev.orium.reader.utils.DateUtils;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.model.RssItem;
 

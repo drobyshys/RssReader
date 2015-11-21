@@ -2,12 +2,11 @@ package com.dev.orium.reader.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
 import com.dev.orium.reader.R;
-import com.dev.orium.reader.Utils.SharedUtils;
+import com.dev.orium.reader.utils.SharedUtils;
 import com.dev.orium.reader.activities.AddFeedActivity;
 import com.dev.orium.reader.fragments.FeedFragment;
 import com.dev.orium.reader.fragments.MenuFragment;

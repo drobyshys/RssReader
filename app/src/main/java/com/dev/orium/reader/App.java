@@ -2,9 +2,9 @@ package com.dev.orium.reader;
 
 import android.app.Application;
 
-import com.dev.orium.reader.Utils.AppUtils;
-import com.dev.orium.reader.Utils.DateUtils;
-import com.dev.orium.reader.Utils.SharedUtils;
+import com.dev.orium.reader.utils.AppUtils;
+import com.dev.orium.reader.utils.DateUtils;
+import com.dev.orium.reader.utils.SharedUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
