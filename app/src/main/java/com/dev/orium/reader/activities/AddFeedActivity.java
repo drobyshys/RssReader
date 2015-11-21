@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -11,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dev.orium.reader.R;
+import com.dev.orium.reader.fragments.RetainedFragment;
 import com.dev.orium.reader.utils.AppUtils;
 import com.dev.orium.reader.adapters.FeedSearchAdapter;
 import com.dev.orium.reader.controller.MainController;
@@ -27,6 +28,7 @@ import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.network.RequestHelper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -39,10 +41,9 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class AddFeedActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
 
     public static final String TAG = "AddFeedActivity";
-    public static final String SELECTED_FEED = "feed";
 
-    @InjectView(R.id.btnSearch)
-    Button btnSearch;
+    private RetainedFragment dataFragment;
+
     @InjectView(R.id.etQuery)
     EditText etQuery;
     @InjectView(android.R.id.list)
@@ -52,8 +53,10 @@ public class AddFeedActivity extends AppCompatActivity implements TextView.OnEdi
     @InjectView(android.R.id.empty)
     TextView tvEmpty;
 
+    List<Feed> mSearchResults = new ArrayList<>();
+
     private FeedSearchAdapter adapter;
-    private SearchFeedTask searchFeedTask;
+    private SearchFeedTask mSearchFeedTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +70,32 @@ public class AddFeedActivity extends AppCompatActivity implements TextView.OnEdi
 
         ButterKnife.inject(this);
 
-        searchFeedTask = (SearchFeedTask) getLastCustomNonConfigurationInstance();
-
-        if (searchFeedTask != null && searchFeedTask.getStatus() == AsyncTask.Status.RUNNING) {
-            searchFeedTask.setActivity(this);
-            pbLoading.setVisibility(View.VISIBLE);
-        }
         etQuery.setOnEditorActionListener(this);
 
-        adapter = new FeedSearchAdapter(this, new ArrayList<Feed>());
+        adapter = new FeedSearchAdapter(this, mSearchResults);
         listView.setAdapter(adapter);
+
+        retrieveRetainedData();
+    }
+
+    private void retrieveRetainedData() {
+        FragmentManager fm = getSupportFragmentManager();
+        dataFragment = (RetainedFragment) fm.findFragmentByTag(RetainedFragment.FRAGMENT_TAG);
+        if (dataFragment != null) {
+            Object data = dataFragment.getData();
+            if (data instanceof SearchFeedTask) {
+                if (mSearchFeedTask != null && mSearchFeedTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    mSearchFeedTask.setActivity(this);
+                    pbLoading.setVisibility(View.VISIBLE);
+                }
+            } else if (data instanceof List) {
+                mSearchResults.addAll((Collection<? extends Feed>) data);
+                adapter.notifyDataSetChanged();
+            }
+        } else {
+            dataFragment = new RetainedFragment<>();
+            fm.beginTransaction().add(dataFragment, RetainedFragment.FRAGMENT_TAG).commit();
+        }
     }
 
     private void applyDialogTheme() {
@@ -85,33 +104,29 @@ public class AddFeedActivity extends AppCompatActivity implements TextView.OnEdi
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.alpha = 1.0f;
         params.dimAmount = 0.1f;
-        getWindow().setAttributes((WindowManager.LayoutParams) params);
+        getWindow().setAttributes(params);
 
         DisplayMetrics metrics = AppUtils.getScreenMetrics(this);
         // This sets the window size, while working around the IllegalStateException thrown by ActionBarView
-        getWindow().setLayout(Math.min(metrics.widthPixels, 900) ,Math.min(metrics.heightPixels, 1200));
-    }
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        searchFeedTask.setActivity(null);
-        return searchFeedTask;
+        getWindow().setLayout(Math.min(metrics.widthPixels, 900), Math.min(metrics.heightPixels, 1200));
     }
 
     private void onSearchComplete(List<Feed> feeds, boolean hasError) {
         pbLoading.setVisibility(View.GONE);
-        adapter.clear();
+        mSearchResults.clear();
 
         if (hasError) {
-//            tvEmpty.setText(getString(R.string.error_search));
+            tvEmpty.setText(getString(R.string.error_search));
             return;
         }
 
-        adapter.addAll(feeds);
+        mSearchResults.addAll(feeds);
         adapter.notifyDataSetChanged();
         if (feeds.size() == 0) {
             tvEmpty.setVisibility(View.VISIBLE);
         }
+
+        mSearchFeedTask = null;
     }
 
     @OnClick(R.id.btnSearch)
@@ -122,11 +137,11 @@ public class AddFeedActivity extends AppCompatActivity implements TextView.OnEdi
         }
 
         String query = etQuery.getText().toString().trim();
-        if (query != null) {
+        if (query.length() > 0) {
             AppUtils.hideKeyboard(this, etQuery);
 
-            searchFeedTask = new SearchFeedTask(this);
-            searchFeedTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
+            mSearchFeedTask = new SearchFeedTask(this);
+            mSearchFeedTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
             pbLoading.setVisibility(View.VISIBLE);
             tvEmpty.setVisibility(View.GONE);
         }
@@ -152,6 +167,16 @@ public class AddFeedActivity extends AppCompatActivity implements TextView.OnEdi
         return false;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mSearchFeedTask != null && !mSearchFeedTask.isCancelled()) {
+            dataFragment.setData(mSearchFeedTask);
+        } else {
+            dataFragment.setData(mSearchResults);
+        }
+    }
+
     private static class SearchFeedTask extends AsyncTask<String, Void, List<Feed>> {
         private boolean hasError;
         private AddFeedActivity activity;
@@ -167,7 +192,7 @@ public class AddFeedActivity extends AppCompatActivity implements TextView.OnEdi
             try {
                 return RequestHelper.searchFeedRequest(params[0]);
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
+                Log.e(RetainedFragment.FRAGMENT_TAG, e.getMessage(), e);
                 hasError = true;
             }
             return null;

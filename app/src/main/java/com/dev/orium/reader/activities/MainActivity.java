@@ -11,6 +11,7 @@ import com.dev.orium.reader.R;
 import com.dev.orium.reader.controller.Controller;
 import com.dev.orium.reader.controller.MainController;
 import com.dev.orium.reader.controller.TabletController;
+import com.dev.orium.reader.fragments.RetainedFragment;
 
 import butterknife.ButterKnife;
 
@@ -20,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isTablet;
     private boolean expanded;
     private Controller controller;
-
 
     @Override
     protected void onCreate(Bundle state) {
