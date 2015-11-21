@@ -3,6 +3,7 @@ package com.dev.orium.reader.controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
 import com.dev.orium.reader.R;
@@ -30,14 +31,14 @@ public abstract class BaseController implements Controller {
     @InjectView(R.id.menuContainer)
     FrameLayout contMenu;
 
-    protected ActionBarActivity mActivity;
+    protected AppCompatActivity mActivity;
     protected MenuFragment mFragmentMenu;
     protected FeedFragment mFragmentFeed;
 
     protected Feed mCurrentFeed;
     protected final int mOrientation;
 
-    BaseController(ActionBarActivity context) {
+    BaseController(AppCompatActivity context) {
         mActivity = context;
 
         ButterKnife.inject(this, mActivity);

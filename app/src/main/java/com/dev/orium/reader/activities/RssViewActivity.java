@@ -2,6 +2,7 @@ package com.dev.orium.reader.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.dev.orium.reader.R;
@@ -10,7 +11,7 @@ import com.dev.orium.reader.fragments.ViewRssFragment;
 /**
  * Created by y.drobysh on 19.11.2014.
  */
-public class RssViewActivity extends ActionBarActivity {
+public class RssViewActivity extends AppCompatActivity {
 
 
     @Override

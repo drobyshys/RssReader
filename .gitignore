@@ -27,6 +27,7 @@ local.properties
 .idea/vcs.xml
 .idea/gradle.xml
 *.iml
+.idea/
 
 build/intermediates/
  

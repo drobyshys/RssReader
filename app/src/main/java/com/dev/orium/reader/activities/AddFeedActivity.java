@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,7 +37,7 @@ import butterknife.OnItemClick;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class AddFeedActivity extends ActionBarActivity implements TextView.OnEditorActionListener {
+public class AddFeedActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
 
     public static final String TAG = "AddFeedActivity";
     public static final String SELECTED_FEED = "feed";
