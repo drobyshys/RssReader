@@ -1,18 +1,15 @@
 package com.dev.orium.reader.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.fragments.ViewRssFragment;
 
-/**
- * Created by y.drobysh on 19.11.2014.
- */
 public class RssViewActivity extends AppCompatActivity {
 
+    private ViewRssFragment mFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,19 +17,17 @@ public class RssViewActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_container);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
-            ViewRssFragment fragment = new ViewRssFragment();
+            mFragment = new ViewRssFragment();
 
             if (getIntent() != null)
-                fragment.setArguments(getIntent().getExtras());
+                mFragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
+                    .replace(R.id.container, mFragment)
                     .commit();
 
         }
-
     }
 
     @Override

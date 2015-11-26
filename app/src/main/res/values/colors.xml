@@ -2,4 +2,6 @@
 <resources>
     <color name="lv_back">#ddd</color>
     <color name="lv_divider">#567</color>
+    <color name="primary_blue">#3F51B5</color>
+    <color name="blue_light">#5C6BC0</color>
 </resources>

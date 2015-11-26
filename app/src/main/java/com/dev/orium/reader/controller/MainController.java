@@ -1,14 +1,14 @@
 package com.dev.orium.reader.controller;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.utils.SharedUtils;
@@ -56,45 +56,30 @@ public class MainController extends BaseController {
     }
 
     private void setupDrawer() {
-        drawerLayout.setScrimColor(Color.TRANSPARENT);
+        Toolbar toolbar = (Toolbar) mActivity.findViewById(R.id.toolbar);
+        mActivity.setSupportActionBar(toolbar);
 
-        ActionBar actionBar = mActivity.getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-
-        mDrawerToggle = new ActionBarDrawerToggle(
-                mActivity,                    /* host Activity */
-                drawerLayout,                    /* DrawerLayout object */
-                R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
-                R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
-        ) {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                mActivity, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                mActivity.invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                mActivity.invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
+            public void onDrawerSlide(final View drawerView, final float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 contFeed.setTranslationX(slideOffset * contMenu.getWidth());
             }
-        };
-        drawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerToggle.syncState();
-//                if (savedState != null)
-            }
-        });
 
-        drawerLayout.setDrawerListener(mDrawerToggle);
+            @Override
+            public void onDrawerClosed(final View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(final View drawerView) {
+                super.onDrawerOpened(drawerView);
+                ViewGroup.LayoutParams layoutParams = contFeed.getLayoutParams();
+            }
+        };
+        drawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
     }
 
 
@@ -115,7 +100,7 @@ public class MainController extends BaseController {
 
     public boolean onBackPressed() {
         if (drawerLayout.isDrawerOpen(contMenu)) {
-            drawerLayout.openDrawer(contMenu);
+            drawerLayout.closeDrawer(contMenu);
             return true;
         }
         return false;
