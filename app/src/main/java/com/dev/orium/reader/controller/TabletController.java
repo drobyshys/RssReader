@@ -86,7 +86,7 @@ public class TabletController extends BaseController {
         mPaneAnimator.showRss();
         menuItemFull.setVisible(true);
 
-        mFragmentRss.setRssItem(id);
+        mFragmentRss.setRssItem(id, mCurrentFeed);
         mIsRssVisible = true;
     }
 

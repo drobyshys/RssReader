@@ -54,6 +54,7 @@ public class ViewRssFragment extends Fragment {
     private RssViewActivity mActivity;
 
     boolean mIsFullView;
+    private Menu mMenu;
 
     public ViewRssFragment() {
         // Required empty public constructor
@@ -136,7 +137,8 @@ public class ViewRssFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_view_rss, menu);
+        mMenu = menu;
+        inflater.inflate(R.menu.menu_view_rss, mMenu);
     }
 
     @Override
@@ -146,14 +148,33 @@ public class ViewRssFragment extends Fragment {
             case R.id.menu_rss_web_view:
                 mIsFullView = !mIsFullView;
                 updateView();
-                item.setIcon(mIsFullView ? R.drawable.ic_note_text : R.drawable.ic_eye);
-                mPaneInfo.setVisibility(mIsFullView ? View.GONE : View.VISIBLE);
+                updateUIBasedOnFullWebView(item);
                 break;
             case R.id.menu_rss_browser:
                 openInBrowser();
                 break;
+            case R.id.menu_rss_remove:
+                onItemRemove();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateUIBasedOnFullWebView(final MenuItem item) {
+        if (item != null) {
+            item.setIcon(mIsFullView ? R.drawable.ic_note_text : R.drawable.ic_eye);
+            mPaneInfo.setVisibility(mIsFullView ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private void onItemRemove() {
+        mIsFullView = false;
+        updateUIBasedOnFullWebView(mMenu.findItem(R.id.menu_rss_web_view));
+
+        cupboard.delete(RssProvider.RSS_URI, rssItem);
+        rssItem = null;
+
+        getActivity().onBackPressed();
     }
 
     private void openInBrowser() {
@@ -166,7 +187,7 @@ public class ViewRssFragment extends Fragment {
         }
     }
 
-    public void setRssItem(long id) {
+    public void setRssItem(long id, final Feed currentFeed) {
         setRssId(id);
         if (isAdded()) {
             getData(id);

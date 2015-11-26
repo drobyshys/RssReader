@@ -61,32 +61,24 @@ public class UpdateService extends IntentService {
     private void handleActionUpdateFeed(int id) {
         Feed feed = cupboard().withContext(this)
                 .get(ContentUris.withAppendedId(RssProvider.FEEDS_URI, id), Feed.class);
-        if (feed != null) {
 
+        if (feed != null) {
             try {
                 XmlPullParser parser = RequestHelper.getParserByUrl(feed.urlFeed);
                 FeedParser.parseFeed(parser, feed);
 
                 cupboard().withContext(this).put(RssProvider.RSS_URI, RssItem.class, feed.entries);
-
-
                 cupboard().withContext(this).put(RssProvider.FEEDS_URI, feed);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            } catch (FeedParser.UnknownFeedException e) {
+            } catch (XmlPullParserException | FeedParser.UnknownFeedException | IOException e) {
                 e.printStackTrace();
             }
-
-
-
         }
+
         EventBus.getDefault().post(new FeedUpdatedEvent(id));
     }
 
     private void handleActionUpdateAll() {
         // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

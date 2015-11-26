@@ -107,15 +107,12 @@ public class RssProvider extends ContentProvider {
             case FEED_ITEM:
                 id = cupboard().withDatabase(db).put(Feed.class, values);
                 base = FEEDS_PATH;
-
-
                 break;
             case RSS:
                 id = db.insertWithOnConflict("RssItem", null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 base = RSS_PATH;
                 break;
             case RSS_ITEM:
-//                id = db.insertWithOnConflict("RssItem", null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 id = cupboard().withDatabase(db).put(RssItem.class, values);
                 base = RSS_PATH;
                 break;
@@ -129,7 +126,20 @@ public class RssProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = sURIMatcher.match(uri);
+        int rows = 0;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        switch (uriType) {
+            case RSS_ITEM:
+                long id = ContentUris.parseId(uri);
+                rows = cupboard().withDatabase(db).delete(RssItem.class, id) ? 1 : 0;
+                break;
+            default:
+                throw new IllegalArgumentException("unknown URI: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rows;
     }
 
     @Override

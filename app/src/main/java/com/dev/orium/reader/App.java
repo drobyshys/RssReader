@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.utils.L;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class App extends Application {
@@ -20,8 +21,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        Fabric.with(this, new Crashlytics());
-
         AppUtils.init(this);
         SharedUtils.init(this);
         DateUtils.init(this);
@@ -29,7 +28,7 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
-            Timber.plant(new CrashReportingTree());
+            Timber.plant(new CrashReportingTree(this));
         }
 
         initImageLoader();
@@ -59,15 +58,19 @@ public class App extends Application {
     }
 
     private static class CrashReportingTree extends Timber.Tree {
+        public CrashReportingTree(App app) {
+            Fabric.with(app, new Crashlytics());
+        }
+
         @Override protected void log(int priority, String tag, String message, Throwable t) {
             if (priority == Log.VERBOSE || priority == Log.DEBUG) {
                 return;
             }
 
-            Crashlytics.getInstance().log(priority, tag, message);
+            Crashlytics.log(priority, tag, message);
 
             if (t != null) {
-                Crashlytics.getInstance().logException(t);
+                Crashlytics.logException(t);
             }
         }
     }
@@ -81,11 +84,9 @@ favorites
 save to disk?
 settings
 themes
-web version
 search select several
-open within app
-
-
+auto sync
+import/export
 
  */
 

@@ -34,17 +34,11 @@ public class MainController extends BaseController {
     @Optional @InjectView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
-
-    private ActionBarDrawerToggle mDrawerToggle;
-
-
     private MenuItem menuItemFull;
     private MenuItem menuItemAdd;
 
-
     public MainController(MainActivity activity, Bundle savedInstanceState) {
         super(activity);
-
 
         setupDrawer();
 
@@ -82,7 +76,6 @@ public class MainController extends BaseController {
         toggle.syncState();
     }
 
-
     public void selectFeed(Feed feed) {
         drawerLayout.closeDrawer(contMenu);
 
@@ -96,8 +89,6 @@ public class MainController extends BaseController {
         mActivity.startActivity(rssIntent);
     }
 
-
-
     public boolean onBackPressed() {
         if (drawerLayout.isDrawerOpen(contMenu)) {
             drawerLayout.closeDrawer(contMenu);
@@ -106,11 +97,7 @@ public class MainController extends BaseController {
         return false;
     }
 
-
-
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item))
-            return true;
         switch (item.getItemId()) {
             case android.R.id.home:
 //                if (mIsRssShown) {

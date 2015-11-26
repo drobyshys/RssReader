@@ -12,4 +12,9 @@
           app:showAsAction="always"
           android:title="browser"
         />
+    <item android:id="@+id/menu_rss_remove"
+          android:icon="@drawable/ic_delete"
+          app:showAsAction="ifRoom"
+          android:title="remove"
+        />
 </menu>

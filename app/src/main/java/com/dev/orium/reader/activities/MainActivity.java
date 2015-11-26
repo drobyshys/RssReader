@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (controller.onOptionsItemSelected(item))
             return true;
 
