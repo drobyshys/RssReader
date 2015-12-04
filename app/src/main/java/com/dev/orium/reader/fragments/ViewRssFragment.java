@@ -1,6 +1,7 @@
 package com.dev.orium.reader.fragments;
 
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,8 +28,6 @@ import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.model.RssItem;
 import com.dev.orium.reader.utils.DateUtils;
 
-import java.util.Timer;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import nl.qbusict.cupboard.ProviderCompartment;
@@ -38,7 +38,7 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class ViewRssFragment extends Fragment {
 
-    public static final String EXTRAS_RSS_ITEM_ID = "rss_item_id";
+    public static final String EXTRAS_RSS_ITEM_ID = "rss_id";
 
     @InjectView(R.id.wvContent)
     WebView wvContent;
@@ -51,7 +51,7 @@ public class ViewRssFragment extends Fragment {
     private Feed feed;
     private ProviderCompartment cupboard;
     private long rssId;
-    private RssViewActivity mActivity;
+    private AppCompatActivity mActivity;
 
     boolean mIsFullView;
     private Menu mMenu;
@@ -59,10 +59,18 @@ public class ViewRssFragment extends Fragment {
     public ViewRssFragment() {
         // Required empty public constructor
     }
-
+//
     public static ViewRssFragment newInstance() {
         ViewRssFragment fragment = new ViewRssFragment();
         fragment.setArguments(new Bundle());
+        return fragment;
+    }
+
+    public static Fragment newInstance(final long rssId) {
+        ViewRssFragment fragment = new ViewRssFragment();
+        Bundle args = new Bundle();
+        args.putLong(EXTRAS_RSS_ITEM_ID, rssId);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -82,7 +90,7 @@ public class ViewRssFragment extends Fragment {
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
-        mActivity = (RssViewActivity) context;
+        mActivity = (AppCompatActivity) context;
     }
 
     @Override
@@ -110,10 +118,6 @@ public class ViewRssFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        mActivity.setSupportActionBar(toolbar);
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (rssItem != null)
             updateView();
@@ -234,4 +238,5 @@ public class ViewRssFragment extends Fragment {
         }
         args.putLong(EXTRAS_RSS_ITEM_ID, rssId);
     }
+
 }

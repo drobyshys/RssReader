@@ -105,7 +105,7 @@ public class PaneAnimator implements Animation.AnimationListener {
     }
 
     private void changeWidthTo(FrameLayout frame, int newWidth) {
-        if (frame.getWidth() != newWidth) {
+        if (frame.getLayoutParams().width != newWidth) {
             frame.getLayoutParams().width = newWidth;
             frame.requestLayout();
         }

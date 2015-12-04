@@ -15,7 +15,6 @@ import com.dev.orium.reader.utils.SharedUtils;
 import com.dev.orium.reader.activities.MainActivity;
 import com.dev.orium.reader.activities.RssViewActivity;
 import com.dev.orium.reader.data.DatabaseHelper;
-import com.dev.orium.reader.fragments.ViewRssFragment;
 import com.dev.orium.reader.model.Feed;
 import com.dev.orium.reader.network.UpdateService;
 
@@ -51,8 +50,6 @@ public class MainController extends BaseController {
 
     private void setupDrawer() {
         Toolbar toolbar = (Toolbar) mActivity.findViewById(R.id.toolbar);
-        mActivity.setSupportActionBar(toolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 mActivity, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -69,7 +66,6 @@ public class MainController extends BaseController {
             @Override
             public void onDrawerOpened(final View drawerView) {
                 super.onDrawerOpened(drawerView);
-                ViewGroup.LayoutParams layoutParams = contFeed.getLayoutParams();
             }
         };
         drawerLayout.setDrawerListener(toggle);
@@ -83,9 +79,10 @@ public class MainController extends BaseController {
         mFragmentFeed.setFeed(feed);
     }
 
-    public void onRssItemClick(long id) {
+    public void onRssItemClick(long id, final long feedId) {
         Intent rssIntent = new Intent(mActivity, RssViewActivity.class);
-        rssIntent.putExtra(ViewRssFragment.EXTRAS_RSS_ITEM_ID, id);
+        rssIntent.putExtra(RssViewActivity.EXTRAS_RSS_ITEM_ID, id);
+        rssIntent.putExtra(RssViewActivity.EXTRAS_FEED_ID, feedId);
         mActivity.startActivity(rssIntent);
     }
 

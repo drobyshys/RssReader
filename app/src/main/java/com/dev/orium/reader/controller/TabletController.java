@@ -2,6 +2,7 @@ package com.dev.orium.reader.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -56,7 +57,7 @@ public class TabletController extends BaseController {
             mFragmentRss = ViewRssFragment.newInstance();
 
             mActivity.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.detailContainer, mFragmentRss, FRAGMENT_RSS_TAG)
+                    .add(R.id.detailContainer, mFragmentRss, FRAGMENT_RSS_TAG)
                     .commit();
         }
 
@@ -72,8 +73,14 @@ public class TabletController extends BaseController {
     }
 
     public void selectFeed(Feed feed) {
-        if (mFragmentRss.isAdded()) {
-            mActivity.getSupportFragmentManager().popBackStack();
+        if (mIsRssVisible) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mActivity.getSupportFragmentManager().popBackStack();
+                    mIsRssVisible = false;
+                }
+            });
         }
         mPaneAnimator.onMenuItem();
 
@@ -81,8 +88,7 @@ public class TabletController extends BaseController {
         mFragmentFeed.setFeed(feed);
     }
 
-    public void onRssItemClick(long id) {
-
+    public void onRssItemClick(long id, final long feedId) {
         mPaneAnimator.showRss();
         menuItemFull.setVisible(true);
 

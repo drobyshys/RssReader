@@ -13,7 +13,7 @@ import com.dev.orium.reader.model.Feed;
 public interface Controller {
     void selectFeed(Feed feed);
 
-    void onRssItemClick(long id);
+    void onRssItemClick(long id, final long _id);
 
     void onCreateOptionsMenu(Menu menu);
 

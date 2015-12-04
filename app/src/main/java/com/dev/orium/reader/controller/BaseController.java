@@ -2,18 +2,24 @@ package com.dev.orium.reader.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
 
 import com.dev.orium.reader.R;
 import com.dev.orium.reader.utils.SharedUtils;
 import com.dev.orium.reader.activities.AddFeedActivity;
-import com.dev.orium.reader.fragments.FeedFragment;
+import com.dev.orium.reader.fragments.FeedListFragment;
 import com.dev.orium.reader.fragments.MenuFragment;
 import com.dev.orium.reader.model.Feed;
 
+import java.util.Timer;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 /**
  * Created by y.drobysh on 04.12.2014.
@@ -32,13 +38,17 @@ public abstract class BaseController implements Controller {
 
     protected AppCompatActivity mActivity;
     protected MenuFragment mFragmentMenu;
-    protected FeedFragment mFragmentFeed;
+    protected FeedListFragment mFragmentFeed;
+
+    Handler mHandler;
 
     protected Feed mCurrentFeed;
     protected final int mOrientation;
 
     BaseController(AppCompatActivity context) {
+        Timber.d("Controller creation...");
         mActivity = context;
+        mHandler = new Handler(Looper.getMainLooper());
 
         ButterKnife.inject(this, mActivity);
 
@@ -58,14 +68,17 @@ public abstract class BaseController implements Controller {
         }
         mFragmentMenu.setController(this);
 
-        mFragmentFeed = (FeedFragment) mActivity.getSupportFragmentManager().findFragmentByTag(FRAGMENT_FEED_TAG);
+        mFragmentFeed = (FeedListFragment) mActivity.getSupportFragmentManager().findFragmentByTag(FRAGMENT_FEED_TAG);
         if (mFragmentFeed == null) {
-            mFragmentFeed = FeedFragment.newInstance(mCurrentFeed != null ? mCurrentFeed._id : -1);
+            mFragmentFeed = FeedListFragment.newInstance(mCurrentFeed != null ? mCurrentFeed._id : -1);
             mActivity.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, mFragmentFeed, FRAGMENT_FEED_TAG)
                     .commit();
         }
         mFragmentFeed.setController(this);
+
+        Toolbar toolbar = (Toolbar) mActivity.findViewById(R.id.toolbar);
+        mActivity.setSupportActionBar(toolbar);
     }
 
     protected void startNewFeedActivity() {

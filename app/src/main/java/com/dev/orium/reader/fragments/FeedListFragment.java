@@ -35,7 +35,7 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
  * A simple {@link Fragment} subclass.
  *
  */
-public class FeedFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FeedListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String ARGS_LAST_FEED = "last_feed";
 
@@ -50,8 +50,8 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
     private RssItemAdapter adapter;
     private Feed feed;
 
-    public static FeedFragment newInstance(long lastFeedId) {
-        FeedFragment fragment = new FeedFragment();
+    public static FeedListFragment newInstance(long lastFeedId) {
+        FeedListFragment fragment = new FeedListFragment();
         Bundle args = new Bundle();
         if (lastFeedId >= 0) {
             args.putLong(ARGS_LAST_FEED, lastFeedId);
@@ -68,7 +68,7 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
         args.putLong(ARGS_LAST_FEED, feedId);
     }
 
-    public FeedFragment() {
+    public FeedListFragment() {
         // Required empty public constructor
     }
 
@@ -131,7 +131,7 @@ public class FeedFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        controller.onRssItemClick(id);
+        controller.onRssItemClick(id, feed._id);
     }
 
     public void setController(Controller controller) {
