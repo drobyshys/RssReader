@@ -26,7 +26,7 @@ import butterknife.InjectView;
 import nl.qbusict.cupboard.CupboardFactory;
 import timber.log.Timber;
 
-public class RssViewActivity extends AppCompatActivity implements FeedLoaderListener {
+public class RssViewActivity extends AppCompatActivity implements FeedLoaderListener, ViewRssFragment.NavigationListener {
 
     public static final String EXTRAS_RSS_ITEM_ID = "rss_item_id";
     public static final String EXTRAS_FEED_ID = "feed_id";
@@ -94,7 +94,7 @@ public class RssViewActivity extends AppCompatActivity implements FeedLoaderList
     @Override
     public void onFeedLoaded(final long[] data) {
         if (data != null) {
-            mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), data);
+            mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), data, this);
             mPager.setAdapter(mPagerAdapter);
             int pos = 0;
             for (long id : data) {
@@ -106,17 +106,31 @@ public class RssViewActivity extends AppCompatActivity implements FeedLoaderList
         mProgress.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onPrev() {
+        mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+    }
+
+    @Override
+    public void onNext() {
+        mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+    }
+
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         private final long[] mData;
+        private final ViewRssFragment.NavigationListener mNavigationListener;
 
-        public ScreenSlidePagerAdapter(FragmentManager fm, final long[] data) {
+        public ScreenSlidePagerAdapter(FragmentManager fm, final long[] data, ViewRssFragment.NavigationListener navigationListener) {
             super(fm);
             mData = data;
+            mNavigationListener = navigationListener;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return ViewRssFragment.newInstance(mData[position]);
+            ViewRssFragment fragment = ViewRssFragment.newInstance(mData[position]);
+            fragment.setNavigationListener(mNavigationListener);
+            return fragment;
         }
 
         @Override
